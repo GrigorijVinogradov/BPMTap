@@ -46,7 +46,11 @@ func printInfos(isFirstRun bool, bpm int64, avgBpms int64) {
 
 func printSavedAvgs(savedAvgs []int64) {
 	for i, v := range savedAvgs {
-		fmt.Println("Tempo", i+1, "-", v)
+		percentage := 100
+		if i > 0 {
+			percentage = int(float64(v) / float64(savedAvgs[i-1])*100)
+		}
+		fmt.Println("Tempo", i+1, "-", v, "-", percentage, "%")
 	}
 }
 
