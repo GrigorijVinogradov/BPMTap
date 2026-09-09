@@ -6,6 +6,8 @@ import (
 	"os/exec"
 )
 
+var beatsPerMeasure int = 4
+
 func isKeyPressSpecificLetter(b []byte, letter string) bool {
 	if string(b) == letter {
 		return true

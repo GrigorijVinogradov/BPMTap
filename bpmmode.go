@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+var bpmBeatsPerMeasure int = 4
+
 func PrintInitialDisplay() {
 	fmt.Println("Press Any Key to start BPM Tapping!")
 	fmt.Println()
@@ -38,6 +40,7 @@ func PrintKeyBinds() {
 	fmt.Println("press q to quit")
 	fmt.Println("press p to save current average")
 	fmt.Println("press r to reset current average")
+	fmt.Println("press t to toggle between 4 or 6 beats per measure")
 
 	fmt.Println()
 }
@@ -45,7 +48,7 @@ func PrintKeyBinds() {
 func bpmMode(savedAvgs []int64) []int64 {	
 	count := 0
 
-	tapIntervals := [4]int64 {}
+	tapIntervals := make([]int64, 9)
 	previous := time.Now()
 
 	isFirstRun := true
@@ -76,13 +79,13 @@ func bpmMode(savedAvgs []int64) []int64 {
 
 		fmt.Print(strings.Repeat("*", count+1))
 
-		if(count == 3) {
+		if(count == bpmBeatsPerMeasure-1) {
 			tapTime := time.Now()
 			interval := tapTime.Sub(previous)
 			previous = tapTime
 			tapIntervals[count] = interval.Milliseconds()
 
-			avg := average(tapIntervals[1:])
+			avg := average(tapIntervals[1:bpmBeatsPerMeasure])
 			bpm = 60000 / avg
 
 			allBpms = append(allBpms, bpm)
@@ -101,12 +104,24 @@ func bpmMode(savedAvgs []int64) []int64 {
 
 		PrintInfos(isFirstRun, bpm, avgBpms)
 
-
 		if isKeyPressSpecificLetter(b, "r") {
 			printing.ClearScreen()
 			count = 0
 			allBpms = []int64{} 
 			isFirstRun = true
+			PrintInitialDisplay()
+		}
+
+		if isKeyPressSpecificLetter(b, "t") {
+			printing.ClearScreen()
+			count = 0
+			allBpms = []int64{} 
+			isFirstRun = true
+			if bpmBeatsPerMeasure == 4 {
+				bpmBeatsPerMeasure = 6
+			} else {
+				bpmBeatsPerMeasure = 4
+			}
 			PrintInitialDisplay()
 		}
 

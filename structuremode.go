@@ -7,6 +7,8 @@ import (
 	"fmt"
 )
 
+var structureBeatsPerMeasure int = 4
+
 type songPart struct {
 	character string
 	bars int
@@ -27,6 +29,7 @@ func PrintStructureKeybinds() {
 	fmt.Println("press q to quit")
 	fmt.Println("press r to reset current segment")
 	fmt.Println("press d to delete last segment")
+	fmt.Println("press t to toggle between 4 or 6 beats per measure")
 	fmt.Println("press spacebar to finish segment without starting a new one")
 
 	fmt.Println()
@@ -104,6 +107,28 @@ func structureMode(songParts []songPart) []songPart {
 			continue
 		}
 
+		if isKeyPressSpecificLetter(b, "t") {
+			count = 0
+			bars = 0
+			
+			if structureBeatsPerMeasure == 4 {
+				structureBeatsPerMeasure = 6
+			} else {
+				structureBeatsPerMeasure = 4
+			}
+
+			lastCharacter = ""
+			isFirstRun = true
+
+			fmt.Println()
+			fmt.Println()
+
+			PrintStructureKeybinds()
+
+			continue
+		}
+
+
 		if string(lastCharacter) != string(b) {
 			if isFirstRun {
 				lastCharacter = string(b)
@@ -117,9 +142,9 @@ func structureMode(songParts []songPart) []songPart {
 		}
 
 		fmt.Print(string(b), ": ")
-		fmt.Print(strings.Repeat("*", count+1), strings.Repeat(" ", 4-count+1))
+		fmt.Print(strings.Repeat("*", count+1), strings.Repeat(" ", structureBeatsPerMeasure-count))
 
-		if count == 3 {
+		if count == structureBeatsPerMeasure-1 {
 			count = 0
 			bars += 1
 		} else {
