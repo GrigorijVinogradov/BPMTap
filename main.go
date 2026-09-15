@@ -4,6 +4,8 @@ import (
 	"bpmtap/printing"
 	"os"
 	"os/exec"
+	"bpmtap/bpmmode"
+	"bpmtap/structuremode"
 )
 
 
@@ -12,15 +14,6 @@ func isKeyPressSpecificLetter(b []byte, letter string) bool {
 		return true
 	}
 	return false
-}
-
-func average(collection []int64) int64 {
-	var total int64 = 0
-	for _, v := range collection{
-		total += v
-	}
-
-	return total / int64(len(collection))
 }
 
 func setupTerminalInput() {
@@ -33,7 +26,7 @@ func setupTerminalInput() {
 func main() {
 	setupTerminalInput()
 	var savedBpmAvgs []int64
-	var savedSongParts []songPart
+	var savedSongParts []structuremode.SongPart
 
 	var b []byte = make([]byte, 1)
 	for {
@@ -41,11 +34,11 @@ func main() {
 		os.Stdin.Read(b)
 
 		if isKeyPressSpecificLetter(b, "b") { 
-			savedBpmAvgs = bpmMode(savedBpmAvgs)
+			savedBpmAvgs = bpmmode.BpmMode(savedBpmAvgs)
 		}
 
 		if isKeyPressSpecificLetter(b, "s") { 
-			savedSongParts = structureMode(savedSongParts)
+			savedSongParts = structuremode.StructureMode(savedSongParts)
 		}
 
 		if isKeyPressSpecificLetter(b, "q") { 
