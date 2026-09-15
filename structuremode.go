@@ -9,6 +9,28 @@ import (
 
 var structureBeatsPerMeasure int = 4
 
+type structureState struct {
+	count, bars int
+	isFirstRun bool
+	lastCharacter string
+}
+
+func (st *structureState) reset() {
+	st.count = 0
+	st.bars = 0
+	st.lastCharacter = ""
+	st.isFirstRun = true
+}
+
+func (st *structureState) resetAndPrint() {
+	st.reset()
+
+	fmt.Println()
+	fmt.Println()
+
+	PrintStructureKeybinds()
+}
+
 type songPart struct {
 	character string
 	bars int
@@ -38,15 +60,15 @@ func PrintStructureKeybinds() {
 func structureMode(songParts []songPart) []songPart {	
 	printing.ClearScreen()
 
-	count := 0
-	bars := 0
-
-	isFirstRun := true
+	state := structureState {
+		count: 0,
+		bars: 0,
+		isFirstRun: true,
+		lastCharacter: "",
+	}
 
 	PrintInitialStructureDisplay()
 	PrintStructureKeybinds()
-
-	var lastCharacter string
 
 	var b []byte = make([]byte, 1)
 	for {
@@ -59,17 +81,8 @@ func structureMode(songParts []songPart) []songPart {
 
 
 		if isKeyPressSpecificLetter(b, " ") {
-			songParts = append(songParts, songPart{ lastCharacter, bars })
-			count = 0
-			bars = 0
-
-			lastCharacter = ""
-			isFirstRun = true
-
-			fmt.Println()
-			fmt.Println()
-
-			PrintStructureKeybinds()
+			songParts = append(songParts, songPart{ state.lastCharacter, state.bars })
+			state.resetAndPrint()
 
 			continue
 		}
@@ -78,80 +91,53 @@ func structureMode(songParts []songPart) []songPart {
 			if len(songParts) > 0 {
 				songParts = songParts[:len(songParts)-1]
 			}
-			count = 0
-			bars = 0
-			isFirstRun = true
 
-			lastCharacter = ""
-
-			fmt.Println()
-			fmt.Println()
-
-			PrintStructureKeybinds()
-
+			state.resetAndPrint()
 			continue
 		}
 
 		if isKeyPressSpecificLetter(b, "r") {
-			count = 0
-			bars = 0
-
-			lastCharacter = ""
-			isFirstRun = true
-
-			fmt.Println()
-			fmt.Println()
-
-			PrintStructureKeybinds()
+			state.resetAndPrint()
 
 			continue
 		}
 
 		if isKeyPressSpecificLetter(b, "t") {
-			count = 0
-			bars = 0
-			
 			if structureBeatsPerMeasure == 4 {
 				structureBeatsPerMeasure = 6
 			} else {
 				structureBeatsPerMeasure = 4
 			}
 
-			lastCharacter = ""
-			isFirstRun = true
-
-			fmt.Println()
-			fmt.Println()
-
-			PrintStructureKeybinds()
+			state.resetAndPrint()
 
 			continue
 		}
 
 
-		if string(lastCharacter) != string(b) {
-			if isFirstRun {
-				lastCharacter = string(b)
-				isFirstRun = false
+		if string(state.lastCharacter) != string(b) {
+			if state.isFirstRun {
+				state.lastCharacter = string(b)
+				state.isFirstRun = false
 			} else {
-				songParts = append(songParts, songPart{ lastCharacter, bars })
-				count = 0
-				bars = 0
-				lastCharacter = string(b)
+				songParts = append(songParts, songPart{ state.lastCharacter, state.bars })
+				state.count = 0
+				state.bars = 0
+				state.lastCharacter = string(b)
 			}
 		}
 
 		fmt.Print(string(b), ": ")
-		fmt.Print(strings.Repeat("*", count+1), strings.Repeat(" ", structureBeatsPerMeasure-count))
+		fmt.Print(strings.Repeat("*", state.count+1), strings.Repeat(" ", structureBeatsPerMeasure-state.count))
 
-		if count == structureBeatsPerMeasure-1 {
-			count = 0
-			bars += 1
+		if state.count == structureBeatsPerMeasure-1 {
+			state.count = 0
+			state.bars += 1
 		} else {
-			count += 1
+			state.count += 1
 		}
 
-		fmt.Print(bars, " Bars")
+		fmt.Print(state.bars, " Bars")
 		fmt.Println()
 		fmt.Println()
 

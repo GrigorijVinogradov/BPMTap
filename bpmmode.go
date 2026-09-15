@@ -8,6 +8,28 @@ import (
 	"time"
 )
 
+type bpmState struct {
+	count int
+	isFirstRun bool
+	allBpms []int64
+	avgBpms int64
+	bpm int64
+}
+
+func (st *bpmState) reset() {
+	st.count = 0
+	st.allBpms = []int64{} 
+	st.isFirstRun = true
+}
+
+func (st *bpmState) updateBpmStats(tapIntervals []int64) {
+	avg := average(tapIntervals[1:bpmBeatsPerMeasure])
+	st.bpm = 60000 / avg
+
+	st.allBpms = append(st.allBpms, st.bpm)
+	st.avgBpms = average(st.allBpms)
+}
+
 var bpmBeatsPerMeasure int = 4
 
 func PrintInitialDisplay() {
@@ -45,20 +67,31 @@ func PrintKeyBinds() {
 	fmt.Println()
 }
 
+func reset(st *bpmState) {
+	printing.ClearScreen()
+	st.reset()
+	PrintInitialDisplay()
+}
+
+func getMillisecondInterval(previous time.Time) (ms int64, newPrevious time.Time) {
+	tapTime := time.Now()
+	interval := tapTime.Sub(previous)
+	return interval.Milliseconds(), tapTime
+}
+
 func bpmMode(savedAvgs []int64) []int64 {	
-	count := 0
+	state := bpmState {
+		count: 0,
+		isFirstRun: true,
+		allBpms: []int64{},
+		avgBpms: 0,
+		bpm: 0,
+	}
 
 	tapIntervals := make([]int64, 9)
 	previous := time.Now()
 
-	isFirstRun := true
-
-	var allBpms []int64 
-
 	printing.ClearScreen()
-
-	var bpm int64
-	var avgBpms int64
 
 	PrintInitialDisplay()
 	PrintKeyBinds()
@@ -73,70 +106,53 @@ func bpmMode(savedAvgs []int64) []int64 {
 			break
 		}
 
-		if(count == 0) {
+		if(state.count == 0) {
 			previous = time.Now()
 		}
 
-		fmt.Print(strings.Repeat("*", count+1))
+		fmt.Print(strings.Repeat("*", state.count+1))
 
-		if(count == bpmBeatsPerMeasure-1) {
-			tapTime := time.Now()
-			interval := tapTime.Sub(previous)
-			previous = tapTime
-			tapIntervals[count] = interval.Milliseconds()
+		if(state.count == bpmBeatsPerMeasure-1) {
+			tapIntervals[state.count], previous = getMillisecondInterval(previous)
 
-			avg := average(tapIntervals[1:bpmBeatsPerMeasure])
-			bpm = 60000 / avg
-
-			allBpms = append(allBpms, bpm)
-			avgBpms = average(allBpms)
-
-			isFirstRun = false
-			count = 0
+			state.updateBpmStats(tapIntervals)
+			
+			state.isFirstRun = false
+			state.count = 0
 		} else {
-			tapTime := time.Now()
-			interval := tapTime.Sub(previous)
-			previous = tapTime
-			tapIntervals[count] = interval.Milliseconds()
+			tapIntervals[state.count], previous = getMillisecondInterval(previous)
 
-			count += 1
+			state.count += 1
 		}
 
-		PrintInfos(isFirstRun, bpm, avgBpms)
-
-		if isKeyPressSpecificLetter(b, "r") {
-			printing.ClearScreen()
-			count = 0
-			allBpms = []int64{} 
-			isFirstRun = true
-			PrintInitialDisplay()
-		}
-
-		if isKeyPressSpecificLetter(b, "t") {
-			printing.ClearScreen()
-			count = 0
-			allBpms = []int64{} 
-			isFirstRun = true
-			if bpmBeatsPerMeasure == 4 {
-				bpmBeatsPerMeasure = 6
-			} else {
-				bpmBeatsPerMeasure = 4
-			}
-			PrintInitialDisplay()
-		}
-
-		if isKeyPressSpecificLetter(b, "p") {
-			printing.ClearScreen()
-			count = 0
-			allBpms = []int64{} 
-			isFirstRun = true
-			savedAvgs = append(savedAvgs, avgBpms)
-			PrintInitialDisplay()
-		}
+		PrintInfos(state.isFirstRun, state.bpm, state.avgBpms)
+		
+		handleSpecificKeys(b, &state, &savedAvgs)
 
 		PrintKeyBinds()
  	 	PrintSavedAvgs(savedAvgs)
 	}
 	
 	return savedAvgs
+}
+
+func handleSpecificKeys(b []byte, state *bpmState, savedAvgs *[]int64) {
+		if isKeyPressSpecificLetter(b, "r") {
+			reset(state)
+		}
+
+		if isKeyPressSpecificLetter(b, "t") {
+			reset(state)
+			if bpmBeatsPerMeasure == 4 {
+				bpmBeatsPerMeasure = 6
+			} else {
+				bpmBeatsPerMeasure = 4
+			}
+		}
+
+		if isKeyPressSpecificLetter(b, "p") {
+			reset(state)
+			*savedAvgs = append(*savedAvgs, state.avgBpms)
+		}
+
 }
