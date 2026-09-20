@@ -101,4 +101,10 @@ func handleSpecificKeys(b []byte, state *bpmState, savedAvgs *[]int64, ts *times
 			*savedAvgs = append(*savedAvgs, state.avgBpms)
 		}
 
+
+		if util.IsKeyPressSpecificLetter(b, "n") {
+			state.resetAndReprint()
+			state.count = 1
+			*savedAvgs = append(*savedAvgs, state.avgBpms)
+		}
 }

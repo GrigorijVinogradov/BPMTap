@@ -33,6 +33,7 @@ func PrintSavedAvgs(savedAvgs []int64) {
 func PrintKeyBinds() {
 	fmt.Println("press q to quit")
 	fmt.Println("press p to save current average")
+	fmt.Println("press n to save current average and start next immediately")
 	fmt.Println("press r to reset current average")
 	fmt.Println("press t to toggle between 4 or 6 beats per measure")
 
