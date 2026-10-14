@@ -90,8 +90,8 @@ func StructureMode(SongParts []SongPart) []SongPart {
 		}
 
 		fmt.Print(state.bars, " Bars")
-		fmt.Println()
-		fmt.Println()
+		printing.PrintRawLn()
+		printing.PrintRawLn()
 
 		PrintStructureKeybinds()
 

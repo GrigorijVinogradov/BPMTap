@@ -1,20 +1,20 @@
 package structuremode
 
 import (
-	"fmt"
+	"bpmtap/printing"
 )
 
 func PrintInitialStructureDisplay() {
-	fmt.Println("Tap any key to start tapping segment length!")
-	fmt.Println()
+	printing.PrintRawLn("Tap any key to start tapping segment length!")
+	printing.PrintRawLn()
 }
 
 func PrintStructureKeybinds() {
-	fmt.Println("press q to quit")
-	fmt.Println("press r to reset current segment")
-	fmt.Println("press d to delete last segment")
-	fmt.Println("press t to toggle between 4 or 6 beats per measure")
-	fmt.Println("press spacebar to finish segment without starting a new one")
+	printing.PrintRawLn("press q to quit")
+	printing.PrintRawLn("press r to reset current segment")
+	printing.PrintRawLn("press d to delete last segment")
+	printing.PrintRawLn("press t to toggle between 4 or 6 beats per measure")
+	printing.PrintRawLn("press spacebar to finish segment without starting a new one")
 
-	fmt.Println()
+	printing.PrintRawLn()
 }

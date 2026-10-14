@@ -1,6 +1,7 @@
 package structuremode
 
 import (
+	"bpmtap/printing"
 	"fmt"
 )
 
@@ -12,6 +13,6 @@ type SongPart struct {
 func (sp SongPart) printSongPart() {
 	fmt.Print(string(sp.character), ": ")
 	fmt.Print(sp.bars, " Bars")
-	fmt.Println()
+	printing.PrintRawLn()
 }
 

@@ -1,23 +1,23 @@
 package bpmmode
 
 import (
-	"fmt"
+	"bpmtap/printing"
 )
 
 func PrintInitialDisplay() {
-	fmt.Println("Press Any Key to start BPM Tapping!")
-	fmt.Println()
-	fmt.Println()
+	printing.PrintRawLn("Press Any Key to start BPM Tapping!")
+	printing.PrintRawLn()
+	printing.PrintRawLn()
 }
 
 func PrintInfos(isFirstRun bool, bpm int64, avgBpms int64) {
-	fmt.Println()
+	printing.PrintRawLn()
 	if(!isFirstRun) {
-		fmt.Println(bpm, "Average:", avgBpms)
+		printing.PrintRawLn(bpm, "Average:", avgBpms)
 	} else {
-		fmt.Println()
+		printing.PrintRawLn()
 	}
-	fmt.Println()
+	printing.PrintRawLn()
 }
 
 func PrintSavedAvgs(savedAvgs []int64) {
@@ -26,17 +26,17 @@ func PrintSavedAvgs(savedAvgs []int64) {
 		if i > 0 {
 			percentage = int(float64(v) / float64(savedAvgs[i-1])*100)
 		}
-		fmt.Println("Tempo", i+1, "-", v, "-", percentage, "%")
+		printing.PrintRawLn("Tempo", i+1, "-", v, "-", percentage, "%")
 	}
 }
 
 func PrintKeyBinds() {
-	fmt.Println("press q to quit")
-	fmt.Println("press p to save current average")
-	fmt.Println("press n to save current average and start next immediately")
-	fmt.Println("press r to reset current average")
-	fmt.Println("press t to toggle between 4 or 6 beats per measure")
+	printing.PrintRawLn("press q to quit")
+	printing.PrintRawLn("press p to save current average")
+	printing.PrintRawLn("press n to save current average and start next immediately")
+	printing.PrintRawLn("press r to reset current average")
+	printing.PrintRawLn("press t to toggle between 4 or 6 beats per measure")
 
-	fmt.Println()
+	printing.PrintRawLn()
 }
 
