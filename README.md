@@ -4,4 +4,4 @@ A silly terminal tool i wrote for myself to tap out multiple BPMs of songs and t
 
 This is only really useful for songs with lots of tempo changes and/or that have not been recorded to a metronome at all
 
-currently unix only and horribly written 
+horribly written 
