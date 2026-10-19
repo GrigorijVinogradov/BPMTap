@@ -1,8 +1,8 @@
 package bpmmode
 
 import (
+	"bpmtap/components"
 	"bpmtap/printing"
-	"bpmtap/timesignature"
 	"bpmtap/util"
 )
 
@@ -26,7 +26,7 @@ func (st *bpmState) resetAndReprint() {
 	PrintInitialDisplay()
 }
 
-func (st *bpmState) updateBpmStats(tapIntervals []int64, ts timesignature.TimeSignature) {
+func (st *bpmState) updateBpmStats(tapIntervals []int64, ts components.TimeSignature) {
 	avg := util.Average(tapIntervals[1:ts.BeatsPerMeasure])
 	st.bpm = 60000 / avg
 

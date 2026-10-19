@@ -1,4 +1,4 @@
-package timesignature
+package components
 
 type TimeSignature struct {
 	BeatsPerMeasure int

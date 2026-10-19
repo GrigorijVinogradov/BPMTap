@@ -1,25 +1,25 @@
 package structuremode
 
 import (
+	"bpmtap/components"
 	"bpmtap/printing"
-	"bpmtap/timesignature"
 	"bpmtap/util"
 	"fmt"
 	"os"
 	"strings"
 )
 
-func StructureMode(SongParts []SongPart) []SongPart {	
+func StructureMode(SongParts []SongPart) []SongPart {
 	printing.ClearScreen()
 
-	state := structureState {
-		count: 0,
-		bars: 0,
-		isFirstRun: true,
+	state := structureState{
+		count:         0,
+		bars:          0,
+		isFirstRun:    true,
 		lastCharacter: "",
 	}
 
-	ts := timesignature.TimeSignature {
+	ts := components.TimeSignature{
 		BeatsPerMeasure: 4,
 	}
 
@@ -35,9 +35,8 @@ func StructureMode(SongParts []SongPart) []SongPart {
 		os.Stdin.Read(b)
 		printing.ClearScreen()
 
-
 		if util.IsKeyPressSpecificLetter(b, " ") {
-			SongParts = append(SongParts, SongPart{ state.lastCharacter, state.bars })
+			SongParts = append(SongParts, SongPart{state.lastCharacter, state.bars})
 			state.resetAndPrint()
 
 			continue
@@ -66,13 +65,12 @@ func StructureMode(SongParts []SongPart) []SongPart {
 			continue
 		}
 
-
 		if string(state.lastCharacter) != string(b) {
 			if state.isFirstRun {
 				state.lastCharacter = string(b)
 				state.isFirstRun = false
 			} else {
-				SongParts = append(SongParts, SongPart{ state.lastCharacter, state.bars })
+				SongParts = append(SongParts, SongPart{state.lastCharacter, state.bars})
 				state.count = 0
 				state.bars = 0
 				state.lastCharacter = string(b)

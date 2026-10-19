@@ -1,8 +1,8 @@
 package bpmmode
 
 import (
+	"bpmtap/components"
 	"bpmtap/printing"
-	"bpmtap/timesignature"
 	"bpmtap/util"
 	"fmt"
 	"os"
@@ -25,7 +25,7 @@ func BpmMode(savedAvgs []int64) []int64 {
 		bpm:        0,
 	}
 
-	ts := timesignature.TimeSignature{
+	ts := components.TimeSignature{
 		BeatsPerMeasure: 4,
 	}
 
@@ -77,7 +77,7 @@ func BpmMode(savedAvgs []int64) []int64 {
 	return savedAvgs
 }
 
-func handleSpecificKeys(b []byte, state *bpmState, savedAvgs *[]int64, ts *timesignature.TimeSignature) {
+func handleSpecificKeys(b []byte, state *bpmState, savedAvgs *[]int64, ts *components.TimeSignature) {
 	if util.IsKeyPressSpecificLetter(b, "r") {
 		state.resetAndReprint()
 	}
