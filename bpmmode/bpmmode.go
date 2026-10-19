@@ -31,9 +31,7 @@ func BpmMode(savedAvgs []int64) []int64 {
 	tapIntervals := make([]int64, 9)
 	previous := time.Now()
 
-	printing.ClearScreen()
-
-	PrintInitialDisplay()
+	Reprint()
 	PrintKeyBinds()
 	PrintSavedAvgs(savedAvgs)
 

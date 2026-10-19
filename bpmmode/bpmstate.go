@@ -2,7 +2,6 @@ package bpmmode
 
 import (
 	"bpmtap/components"
-	"bpmtap/printing"
 	"bpmtap/util"
 )
 
@@ -21,9 +20,8 @@ func (st *bpmState) reset() {
 }
 
 func (st *bpmState) resetAndReprint() {
-	printing.ClearScreen()
 	st.reset()
-	PrintInitialDisplay()
+	Reprint()
 }
 
 func (st *bpmState) updateBpmStats(tapIntervals []int64, ts components.TimeSignature) {

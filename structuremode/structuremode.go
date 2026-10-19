@@ -26,43 +26,22 @@ func StructureMode(SongParts []SongPart) []SongPart {
 	PrintStructureKeybinds()
 
 	for {
-		for _, v := range SongParts {
-			v.printSongPart()
-		}
+		printSongParts(SongParts)
 
 		b := util.ReadByte()
 		printing.ClearScreen()
 
-		if util.IsKeyPressSpecificLetter(b, " ") {
-			SongParts = append(SongParts, SongPart{state.lastCharacter, state.bars})
-			state.resetAndPrint()
+		//quitting
+		if util.IsKeyPressSpecificLetter(b, "q") {
+			break
+		}
 
+		//all other specific keybinds
+		if handleKeyPress(b, &SongParts, &state, &ts) {
 			continue
 		}
 
-		if util.IsKeyPressSpecificLetter(b, "d") {
-			if len(SongParts) > 0 {
-				SongParts = SongParts[:len(SongParts)-1]
-			}
-
-			state.resetAndPrint()
-			continue
-		}
-
-		if util.IsKeyPressSpecificLetter(b, "r") {
-			state.resetAndPrint()
-
-			continue
-		}
-
-		if util.IsKeyPressSpecificLetter(b, "t") {
-			ts.Toggle()
-
-			state.resetAndPrint()
-
-			continue
-		}
-
+		//switch songpart if key is switched
 		if string(state.lastCharacter) != string(b) {
 			if state.isFirstRun {
 				state.lastCharacter = string(b)
@@ -75,9 +54,11 @@ func StructureMode(SongParts []SongPart) []SongPart {
 			}
 		}
 
+		//print current counting bar
 		fmt.Print(string(b), ": ")
 		fmt.Print(strings.Repeat("*", state.count+1), strings.Repeat(" ", ts.BeatsPerMeasure-state.count))
 
+		//increment bar count if beats per measure is reached
 		if state.count == ts.BeatsPerMeasure-1 {
 			state.count = 0
 			state.bars += 1
@@ -85,16 +66,48 @@ func StructureMode(SongParts []SongPart) []SongPart {
 			state.count += 1
 		}
 
+		//finish printing the bar
 		fmt.Print(state.bars, " Bars")
+
 		printing.PrintRawLn()
 		printing.PrintRawLn()
 
 		PrintStructureKeybinds()
-
-		if util.IsKeyPressSpecificLetter(b, "q") {
-			break
-		}
 	}
 
 	return SongParts
+}
+
+func handleKeyPress(b []byte, SongParts *[]SongPart, state *structureState, ts *components.TimeSignature) bool {
+	if util.IsKeyPressSpecificLetter(b, " ") {
+		*SongParts = append(*SongParts, SongPart{state.lastCharacter, state.bars})
+		state.resetAndPrint()
+
+		return true
+	}
+
+	if util.IsKeyPressSpecificLetter(b, "d") {
+		if len(*SongParts) > 0 {
+			*SongParts = (*SongParts)[:len(*SongParts)-1]
+		}
+
+		state.resetAndPrint()
+		return true
+	}
+
+	if util.IsKeyPressSpecificLetter(b, "r") {
+		state.resetAndPrint()
+
+		return true
+	}
+
+	if util.IsKeyPressSpecificLetter(b, "t") {
+		ts.Toggle()
+
+		state.resetAndPrint()
+
+		return true
+	}
+
+	return false
 }

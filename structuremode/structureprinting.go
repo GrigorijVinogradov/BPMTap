@@ -4,6 +4,11 @@ import (
 	"bpmtap/printing"
 )
 
+func Reprint() {
+	printing.ClearScreen()
+	PrintInitialStructureDisplay()
+}
+
 func PrintInitialStructureDisplay() {
 	printing.PrintRawLn("Tap any key to start tapping segment length!")
 	printing.PrintRawLn()

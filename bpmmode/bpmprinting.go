@@ -10,9 +10,14 @@ func PrintInitialDisplay() {
 	printing.PrintRawLn()
 }
 
+func Reprint() {
+	printing.ClearScreen()
+	PrintInitialDisplay()
+}
+
 func PrintInfos(isFirstRun bool, bpm int64, avgBpms int64) {
 	printing.PrintRawLn()
-	if(!isFirstRun) {
+	if !isFirstRun {
 		printing.PrintRawLn(bpm, "Average:", avgBpms)
 	} else {
 		printing.PrintRawLn()
@@ -24,7 +29,7 @@ func PrintSavedAvgs(savedAvgs []int64) {
 	for i, v := range savedAvgs {
 		percentage := 100
 		if i > 0 {
-			percentage = int(float64(v) / float64(savedAvgs[i-1])*100)
+			percentage = int(float64(v) / float64(savedAvgs[i-1]) * 100)
 		}
 		printing.PrintRawLn("Tempo", i+1, "-", v, "-", percentage, "%")
 	}
@@ -39,4 +44,3 @@ func PrintKeyBinds() {
 
 	printing.PrintRawLn()
 }
-

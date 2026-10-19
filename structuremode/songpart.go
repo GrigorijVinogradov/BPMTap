@@ -7,7 +7,13 @@ import (
 
 type SongPart struct {
 	character string
-	bars int
+	bars      int
+}
+
+func printSongParts(SongParts []SongPart) {
+	for _, v := range SongParts {
+		v.printSongPart()
+	}
 }
 
 func (sp SongPart) printSongPart() {
@@ -15,4 +21,3 @@ func (sp SongPart) printSongPart() {
 	fmt.Print(sp.bars, " Bars")
 	printing.PrintRawLn()
 }
-
