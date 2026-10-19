@@ -5,7 +5,6 @@ import (
 	"bpmtap/printing"
 	"bpmtap/util"
 	"fmt"
-	"os"
 	"strings"
 	"time"
 )
@@ -38,9 +37,8 @@ func BpmMode(savedAvgs []int64) []int64 {
 	PrintKeyBinds()
 	PrintSavedAvgs(savedAvgs)
 
-	var b []byte = make([]byte, 1)
 	for {
-		os.Stdin.Read(b)
+		b := util.ReadByte()
 		printing.ClearScreen()
 
 		if util.IsKeyPressSpecificLetter(b, "q") {

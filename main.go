@@ -4,49 +4,30 @@ import (
 	"bpmtap/bpmmode"
 	"bpmtap/printing"
 	"bpmtap/structuremode"
-	"os"
-
-	"golang.org/x/term"
+	"bpmtap/util"
 )
 
-func isKeyPressSpecificLetter(b []byte, letter string) bool {
-	if string(b) == letter {
-		return true
-	}
-	return false
-}
-
-func setupTerminalInput() func() {
-	fd := int(os.Stdin.Fd())
-	oldState, err := term.MakeRaw(fd)
-	if err != nil {
-		panic(err)
-	}
-	return func() {
-		term.Restore(fd, oldState)
-	}
-}
-
 func main() {
-	restorefunc := setupTerminalInput()
+	restorefunc := util.SetTerminalToRawInputMode()
 	defer restorefunc()
 	var savedBpmAvgs []int64
 	var savedSongParts []structuremode.SongPart
 
-	var b []byte = make([]byte, 1)
 	for {
 		printing.PrintMainMenu()
-		os.Stdin.Read(b)
+		b := util.ReadByte()
 
-		if isKeyPressSpecificLetter(b, "b") {
+		if util.IsKeyPressSpecificLetter(b, "b") {
 			savedBpmAvgs = bpmmode.BpmMode(savedBpmAvgs)
+			continue
 		}
 
-		if isKeyPressSpecificLetter(b, "s") {
+		if util.IsKeyPressSpecificLetter(b, "s") {
 			savedSongParts = structuremode.StructureMode(savedSongParts)
+			continue
 		}
 
-		if isKeyPressSpecificLetter(b, "q") {
+		if util.IsKeyPressSpecificLetter(b, "q") {
 			printing.ClearScreen()
 			break
 		}

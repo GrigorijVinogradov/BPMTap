@@ -5,7 +5,6 @@ import (
 	"bpmtap/printing"
 	"bpmtap/util"
 	"fmt"
-	"os"
 	"strings"
 )
 
@@ -26,13 +25,12 @@ func StructureMode(SongParts []SongPart) []SongPart {
 	PrintInitialStructureDisplay()
 	PrintStructureKeybinds()
 
-	var b []byte = make([]byte, 1)
 	for {
 		for _, v := range SongParts {
 			v.printSongPart()
 		}
 
-		os.Stdin.Read(b)
+		b := util.ReadByte()
 		printing.ClearScreen()
 
 		if util.IsKeyPressSpecificLetter(b, " ") {
