@@ -3,19 +3,20 @@ package bpmmode
 import (
 	"bpmtap/printing"
 	"bpmtap/timesignature"
+	"bpmtap/util"
 )
 
 type bpmState struct {
-	count int
+	count      int
 	isFirstRun bool
-	allBpms []int64
-	avgBpms int64
-	bpm int64
+	allBpms    []int64
+	avgBpms    int64
+	bpm        int64
 }
 
 func (st *bpmState) reset() {
 	st.count = 0
-	st.allBpms = []int64{} 
+	st.allBpms = []int64{}
 	st.isFirstRun = true
 }
 
@@ -25,12 +26,10 @@ func (st *bpmState) resetAndReprint() {
 	PrintInitialDisplay()
 }
 
-
 func (st *bpmState) updateBpmStats(tapIntervals []int64, ts timesignature.TimeSignature) {
-	avg := average(tapIntervals[1:ts.BeatsPerMeasure])
+	avg := util.Average(tapIntervals[1:ts.BeatsPerMeasure])
 	st.bpm = 60000 / avg
 
 	st.allBpms = append(st.allBpms, st.bpm)
-	st.avgBpms = average(st.allBpms)
+	st.avgBpms = util.Average(st.allBpms)
 }
-
